@@ -520,7 +520,7 @@ DVDEF mat4 mat4SetRotationZ (DVTYPE r) {
 }
 DVDEF mat4 mat4SetRotationQuaternion (quat q) {
     DVTYPE xx = q.x*q.x, xy = q.x*q.y, xz = q.x*q.z, xw = q.x*q.w, yy = q.y*q.y, yz = q.y*q.z, yw = q.y*q.w, zz = q.z*q.z, zw = q.z*q.w;
-    return MAT4(1-2*(yy+zz), 2*(xy-zw), 2*(xz+yw), 0, 2*(xy+zw), 1-2*(xx+zz), 2*(yz-xw), 0, 2*(xz-yw), 2*(yz+xw), 1-2*(xx+yy), 0, 0, 0, 0, 1);
+    return MAT4(1-2*(yy-zz), 2*(xy+zw), 2*(xz-yw), 0, 2*(xy-zw), 1-2*(xx-zz), 2*(yz+xw), 0, 2*(xz+yw), 2*(yz-xw), 1-2*(xx-yy), 0, 0, 0, 0, 1);
 }
 DVDEF mat4 mat4SetScale (DVTYPE s) {
     return MAT4(s, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, 1);
