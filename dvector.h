@@ -568,31 +568,31 @@ DVDEF mat4 mat4MultiplyScalar (mat4 m, DVTYPE s) {
     return m;
 }
 DVDEF mat4 mat4RotateX (mat4 m, DVTYPE r) {
-    return mat4MultiplyMatrix(m, mat4SetRotationX(r));
+    return mat4MultiplyMatrix(mat4SetRotationX(r), m);
 }
 DVDEF mat4 mat4RotateY (mat4 m, DVTYPE r) {
-    return mat4MultiplyMatrix(m, mat4SetRotationY(r));
+    return mat4MultiplyMatrix(mat4SetRotationY(r), m);
 }
 DVDEF mat4 mat4RotateZ (mat4 m, DVTYPE r) {
-    return mat4MultiplyMatrix(m, mat4SetRotationZ(r));
+    return mat4MultiplyMatrix(mat4SetRotationZ(r), m);
 }
 DVDEF mat4 mat4RotateQuaternion (mat4 m, quat q) {
-    return mat4MultiplyMatrix(m, mat4SetRotationQuaternion(q));
+    return mat4MultiplyMatrix(mat4SetRotationQuaternion(q), m);
 }
 DVDEF mat4 mat4Scale (mat4 m, DVTYPE s) {
-    return mat4MultiplyMatrix(m, mat4SetScale(s));
+    return mat4MultiplyMatrix(mat4SetScale(s), m);
 }
 DVDEF mat4 mat4ScaleXYZ (mat4 m, vec3 v) {
-    return mat4MultiplyMatrix(m, mat4SetScaleXYZ(v));
+    return mat4MultiplyMatrix(mat4SetScaleXYZ(v), m);
 }
 DVDEF mat4 mat4Translate (mat4 m, vec3 v) {
-    return mat4MultiplyMatrix(m, mat4SetTranslation(v));
+    return mat4MultiplyMatrix(mat4SetTranslation(v), m);
 }
 DVDEF mat4 mat4MultiplyMatrix (mat4 m1, mat4 m2) {
     mat4 m;
     for(int i = 0; i < 4; i++)
         for(int j = 0; j < 4; j++)
-            m.m[i][j] = m1.m[i][0]*m2.m[0][j] + m1.m[i][1]*m2.m[1][j] + m1.m[i][2]*m2.m[2][j] + m1.m[i][3]*m2.m[3][j];
+            m.m[i][j] = m1.m[0][j]*m2.m[i][0] + m1.m[1][j]*m2.m[i][1] + m1.m[2][j]*m2.m[i][2] + m1.m[3][j]*m2.m[i][3];
     return m;
 }
 DVDEF mat4 mat4Add (mat4 m1, mat4 m2) {
