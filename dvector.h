@@ -356,22 +356,22 @@ DVDEF quat quatAxisAngle (vec3 a, DVTYPE r) {
     return QUAT(a.x*s, a.y*s, a.z*s, DVCOS(r/2));
 }
 DVDEF quat quatEulerXYZ (DVTYPE a, DVTYPE b, DVTYPE c) {
-    return quatMultiply(quatMultiply(quatAxisAngle(VEC3(1, 0, 0), a), quatAxisAngle(VEC3(0, 1, 0), b)), quatAxisAngle(VEC3(0, 0, 1), c));
+    return quatMultiply(quatAxisAngle(VEC3(0, 0, 1), c), quatMultiply(quatAxisAngle(VEC3(0, 1, 0), b), quatAxisAngle(VEC3(1, 0, 0), a)));
 }
 DVDEF quat quatEulerXZY (DVTYPE a, DVTYPE b, DVTYPE c) {
-    return quatMultiply(quatMultiply(quatAxisAngle(VEC3(1, 0, 0), a), quatAxisAngle(VEC3(0, 0, 1), b)), quatAxisAngle(VEC3(0, 1, 0), c));
+    return quatMultiply(quatAxisAngle(VEC3(0, 1, 0), c), quatMultiply(quatAxisAngle(VEC3(0, 0, 1), b), quatAxisAngle(VEC3(1, 0, 0), a)));
 }
 DVDEF quat quatEulerYXZ (DVTYPE a, DVTYPE b, DVTYPE c) {
-    return quatMultiply(quatMultiply(quatAxisAngle(VEC3(0, 1, 0), a), quatAxisAngle(VEC3(1, 0, 0), b)), quatAxisAngle(VEC3(0, 0, 1), c));
+    return quatMultiply(quatAxisAngle(VEC3(0, 0, 1), c), quatMultiply(quatAxisAngle(VEC3(1, 0, 0), b), quatAxisAngle(VEC3(0, 1, 0), a)));
 }
 DVDEF quat quatEulerYZX (DVTYPE a, DVTYPE b, DVTYPE c) {
-    return quatMultiply(quatMultiply(quatAxisAngle(VEC3(0, 1, 0), a), quatAxisAngle(VEC3(0, 0, 1), b)), quatAxisAngle(VEC3(1, 0, 0), c));
+    return quatMultiply(quatAxisAngle(VEC3(1, 0, 0), c), quatMultiply(quatAxisAngle(VEC3(0, 0, 1), b), quatAxisAngle(VEC3(0, 1, 0), a)));
 }
 DVDEF quat quatEulerZXY (DVTYPE a, DVTYPE b, DVTYPE c) {
-    return quatMultiply(quatMultiply(quatAxisAngle(VEC3(0, 0, 1), a), quatAxisAngle(VEC3(1, 0, 0), b)), quatAxisAngle(VEC3(0, 1, 0), c));
+    return quatMultiply(quatAxisAngle(VEC3(0, 1, 0), c), quatMultiply(quatAxisAngle(VEC3(1, 0, 0), b), quatAxisAngle(VEC3(0, 0, 1), a)));
 }
 DVDEF quat quatEulerZYX (DVTYPE a, DVTYPE b, DVTYPE c) {
-    return quatMultiply(quatMultiply(quatAxisAngle(VEC3(0, 0, 1), a), quatAxisAngle(VEC3(0, 1, 0), b)), quatAxisAngle(VEC3(1, 0, 0), c));
+    return quatMultiply(quatAxisAngle(VEC3(1, 0, 0), c), quatMultiply(quatAxisAngle(VEC3(0, 1, 0), b), quatAxisAngle(VEC3(0, 0, 1), a)));
 }
 DVDEF quat quatNormalize (quat q) {
     return vec4Normalize(q);
@@ -520,7 +520,7 @@ DVDEF mat4 mat4SetRotationZ (DVTYPE r) {
 }
 DVDEF mat4 mat4SetRotationQuaternion (quat q) {
     DVTYPE xx = q.x*q.x, xy = q.x*q.y, xz = q.x*q.z, xw = q.x*q.w, yy = q.y*q.y, yz = q.y*q.z, yw = q.y*q.w, zz = q.z*q.z, zw = q.z*q.w;
-    return MAT4(1-2*(yy-zz), 2*(xy+zw), 2*(xz-yw), 0, 2*(xy-zw), 1-2*(xx-zz), 2*(yz+xw), 0, 2*(xz+yw), 2*(yz-xw), 1-2*(xx-yy), 0, 0, 0, 0, 1);
+    return MAT4(1-2*yy-2*zz, 2*xy+2*zw, 2*xz-2*yw, 0, 2*xy-2*zw, 1-2*xx-2*zz, 2*yz+2*xw, 0, 2*xz+2*yw, 2*yz-2*xw, 1-2*xx-2*yy, 0, 0, 0, 0, 1);
 }
 DVDEF mat4 mat4SetScale (DVTYPE s) {
     return MAT4(s, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, 1);
