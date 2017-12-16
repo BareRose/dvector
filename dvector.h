@@ -409,8 +409,8 @@ DVDEF mat2 mat2MultiplyScalar (mat2 m, DVTYPE s) {
 }
 DVDEF mat2 mat2MultiplyMatrix (mat2 m1, mat2 m2) {
     mat2 m;
-    for(int i = 0; i < 2; i++)
-        for(int j = 0; j < 2; j++)
+    for (int i = 0; i < 2; i++)
+        for (int j = 0; j < 2; j++)
             m.m[i][j] = m1.m[i][0]*m2.m[0][j] + m1.m[i][1]*m2.m[1][j];
     return m;
 }
@@ -427,7 +427,7 @@ DVDEF int mat2Equal (mat2 m1, mat2 m2) {
 //mat3 function declarations
 DVDEF vec3 mat3MultiplyVector (mat3 m, vec3 v) {
     vec3 r;
-    for(int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
         r.v[i] = m.m[0][i]*v.x + m.m[1][i]*v.y + m.m[2][i]*v.z;
     return r;
 }
@@ -453,8 +453,8 @@ DVDEF mat3 mat3Inverse (mat3 m) {
     return mat3MultiplyScalar(t, 1/(m.m00*t.m00 + m.m10*t.m10 + m.m20*t.m20));
 }
 DVDEF mat3 mat3MultiplyScalar (mat3 m, DVTYPE s) {
-    for(int i = 0; i < 3; i++)
-        for(int j = 0; j < 3; j++)
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
             m.m[i][j] *= s;
     return m;
 }
@@ -472,28 +472,28 @@ DVDEF mat3 mat3Translate (mat3 m, vec2 v) {
 }
 DVDEF mat3 mat3MultiplyMatrix (mat3 m1, mat3 m2) {
     mat3 m;
-    for(int i = 0; i < 3; i++)
-        for(int j = 0; j < 3; j++)
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
             m.m[i][j] = m1.m[i][0]*m2.m[0][j] + m1.m[i][1]*m2.m[1][j] + m1.m[i][2]*m2.m[2][j];
     return m;
 }
 DVDEF mat3 mat3Add (mat3 m1, mat3 m2) {
     mat3 m;
-    for(int i = 0; i < 3; i++)
-        for(int j = 0; j < 3; j++)
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
             m.m[i][j] = m1.m[i][j] + m2.m[i][j];
     return m;
 }
 DVDEF mat3 mat3Subtract (mat3 m1, mat3 m2) {
     mat3 m;
-    for(int i = 0; i < 3; i++)
-        for(int j = 0; j < 3; j++)
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
             m.m[i][j] = m1.m[i][j] - m2.m[i][j];
     return m;
 }
 DVDEF int mat3Equal (mat3 m1, mat3 m2) {
-    for(int i = 0; i < 3; i++)
-        for(int j = 0; j < 3; j++)
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
             if (m1.m[i][j] != m2.m[i][j])
                 return 0;
     return 1;
@@ -502,7 +502,7 @@ DVDEF int mat3Equal (mat3 m1, mat3 m2) {
 //mat4 function declarations
 DVDEF vec4 mat4MultiplyVector (mat4 m, vec4 v) {
     vec4 r;
-    for(int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
         r.v[i] = m.m[0][i]*v.x + m.m[1][i]*v.y + m.m[2][i]*v.z + m.m[3][i]*v.w;
     return r;
 }
@@ -534,7 +534,7 @@ DVDEF mat4 mat4SetTranslation (vec3 v) {
 DVDEF mat4 mat4LookAt (vec3 from, vec3 to, vec3 up) {
 	vec3 f = vec3Normalize(vec3Subtract(to, from)), s = vec3Normalize(vec3CrossProduct(f, up)), t = vec3CrossProduct(s, f);
     mat4 m = MAT4(s.x, t.x, -f.x, 0, s.y, t.y, -f.y, 0, s.z, t.z, -f.z, 0, 0, 0, 0, 1);
-	for(int i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 		m.m[3][i] = -vec3DotProduct(VEC3(m.m[0][i], m.m[1][i], m.m[2][i]), from);
     return m;
 }
@@ -562,8 +562,8 @@ DVDEF mat4 mat4Inverse (mat4 m) {
         m.m20*s[3] - m.m21*s[1] + m.m22*s[0]), 1/(s[0]*c[5] - s[1]*c[4] + s[2]*c[3] + s[3]*c[2] - s[4]*c[1] + s[5]*c[0]));
 }
 DVDEF mat4 mat4MultiplyScalar (mat4 m, DVTYPE s) {
-    for(int i = 0; i < 4; i++)
-        for(int j = 0; j < 4; j++)
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             m.m[i][j] *= s;
     return m;
 }
@@ -590,28 +590,28 @@ DVDEF mat4 mat4Translate (mat4 m, vec3 v) {
 }
 DVDEF mat4 mat4MultiplyMatrix (mat4 m1, mat4 m2) {
     mat4 m;
-    for(int i = 0; i < 4; i++)
-        for(int j = 0; j < 4; j++)
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             m.m[i][j] = m1.m[0][j]*m2.m[i][0] + m1.m[1][j]*m2.m[i][1] + m1.m[2][j]*m2.m[i][2] + m1.m[3][j]*m2.m[i][3];
     return m;
 }
 DVDEF mat4 mat4Add (mat4 m1, mat4 m2) {
     mat4 m;
-    for(int i = 0; i < 4; i++)
-        for(int j = 0; j < 4; j++)
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             m.m[i][j] = m1.m[i][j] + m2.m[i][j];
     return m;
 }
 DVDEF mat4 mat4Subtract (mat4 m1, mat4 m2) {
     mat4 m;
-    for(int i = 0; i < 4; i++)
-        for(int j = 0; j < 4; j++)
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             m.m[i][j] = m1.m[i][j] - m2.m[i][j];
     return m;
 }
 DVDEF int mat4Equal (mat4 m1, mat4 m2) {
-    for(int i = 0; i < 4; i++)
-        for(int j = 0; j < 4; j++)
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             if (m1.m[i][j] != m2.m[i][j])
                 return 0;
     return 1;
