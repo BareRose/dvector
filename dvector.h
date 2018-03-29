@@ -55,26 +55,26 @@ dvector functions:
 #define DVHYPOT hypotf
 
 //constants
-#define VEC2_ZERO (vec2){0, 0}
-#define VEC3_ZERO (vec3){0, 0, 0}
-#define VEC4_ZERO (vec4){0, 0, 0, 0}
-#define QUAT_IDEN (quat){0, 0, 0, 1}
-#define MAT2_ZERO (mat2){0, 0, 0, 0}
-#define MAT2_IDEN (mat2){1, 0, 0, 1}
-#define MAT3_ZERO (mat3){0, 0, 0, 0, 0, 0, 0, 0, 0}
-#define MAT3_IDEN (mat2){1, 0, 0, 0, 1, 0, 0, 0, 1}
-#define MAT4_ZERO (mat4){0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-#define MAT4_IDEN (mat4){1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}
+#define VEC2_ZERO (vec2){{0, 0}}
+#define VEC3_ZERO (vec3){{0, 0, 0}}
+#define VEC4_ZERO (vec4){{0, 0, 0, 0}}
+#define QUAT_IDEN (quat){{0, 0, 0, 1}}
+#define MAT2_ZERO (mat2){{{0, 0}, {0, 0}}}
+#define MAT2_IDEN (mat2){{{1, 0}, {0, 1}}}
+#define MAT3_ZERO (mat3){{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}}
+#define MAT3_IDEN (mat2){{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}}
+#define MAT4_ZERO (mat4){{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}}
+#define MAT4_IDEN (mat4){{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}}
 
 //macros
-#define VEC2(X, Y) (vec2){X, Y}
-#define VEC3(X, Y, Z) (vec3){X, Y, Z}
-#define VEC4(X, Y, Z, W) (vec4){X, Y, Z, W}
-#define QUAT(X, Y, Z, W) (quat){X, Y, Z, W}
-#define MAT2(M00, M01, M10, M11) (mat2){M00, M01, M10, M11}
-#define MAT3(M00, M01, M02, M10, M11, M12, M20, M21, M22) (mat3){M00, M01, M02, M10, M11, M12, M20, M21, M22}
+#define VEC2(X, Y) (vec2){{X, Y}}
+#define VEC3(X, Y, Z) (vec3){{X, Y, Z}}
+#define VEC4(X, Y, Z, W) (vec4){{X, Y, Z, W}}
+#define QUAT(X, Y, Z, W) (quat){{X, Y, Z, W}}
+#define MAT2(M00, M01, M10, M11) (mat2){{{M00, M01}, {M10, M11}}}
+#define MAT3(M00, M01, M02, M10, M11, M12, M20, M21, M22) (mat3){{{M00, M01, M02}, {M10, M11, M12}, {M20, M21, M22}}}
 #define MAT4(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33) \
-    (mat4){M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33}
+    (mat4){{{M00, M01, M02, M03}, {M10, M11, M12, M13}, {M20, M21, M22, M23}, {M30, M31, M32, M33}}}
 
 //types
 typedef union vec2 {
