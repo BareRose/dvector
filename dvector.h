@@ -24,13 +24,13 @@ dvector types:
     Supports vec2, vec3, vec4, quat, mat2, mat3, and mat4 types with various property aliases for flexible use and concise code.
     Each of the above types comes with a TYPE_ZERO and TYPE_IDEN (for quat and matrix types) constant which translates to a literal.
     Function-like macros of the form TYPE(...) also exist and are meant to provide a concise alternative to typing out literals.
-    The auxiliary frst type supports frustum generation from a projview matrix and simple frustum culling of bounding spheres.
+    The auxiliary frst type supports frustum generation from a projview matrix and simple frustum culling of bounding volumes.
 
 dvector functions:
     Provided functions should be reasonably self-explanatory, and use of macros was deliberately kept low for better readability.
     All equality functions use direct comparison (no epsilon), therefore floating point errors may break equality for some values.
     All quat functions should return normalized quats, occasional normalization is recommended due to float error accumulation.
-    All angles are in radians. Frustum culling of spheres returns 1 for spheres inside the frustum, 0 for spheres outside it.
+    All angles are in radians. Frustum culling of volumes returns 1 for volumes inside the frustum, 0 for volumes outside it.
     All coordinate systems are right-handed unless otherwise noted. Projection functions assume OpenGL-style screen space.
 */
 
@@ -117,7 +117,7 @@ typedef union mat4 {
 typedef union frst {
     DVTYPE f[24];
     vec4 pln[6];
-    struct {vec4 left, right, top, bottom, ndist, fdist;};
+    struct {vec4 left, right, top, bottom, near, far;};
 } frst;
 
 //vec2 function declarations
@@ -237,6 +237,7 @@ DVDEF int mat4Equal(mat4, mat4);
 //frst function declarations
 DVDEF frst frstFromMatrix(mat4);
 DVDEF int frstCullSphere(frst, vec3, DVTYPE);
+DVDEF int frstCullAABB(frst, vec3, vec3);
 
 //implementation section
 #ifdef DVECTOR_IMPLEMENTATION
@@ -639,19 +640,23 @@ DVDEF frst frstFromMatrix (mat4 m) {
     f.right = VEC4(m.m03-m.m00, m.m13-m.m10, m.m23-m.m20, m.m33-m.m30);
     f.top = VEC4(m.m03-m.m01, m.m13-m.m11, m.m23-m.m21, m.m33-m.m31);
     f.bottom = VEC4(m.m03+m.m01, m.m13+m.m11, m.m23+m.m21, m.m33+m.m31);
-    f.ndist = VEC4(m.m03+m.m02, m.m13+m.m12, m.m23+m.m22, m.m33+m.m32);
-    f.fdist = VEC4(m.m03-m.m02, m.m13-m.m12, m.m23-m.m22, m.m33-m.m32);
+    f.near = VEC4(m.m03+m.m02, m.m13+m.m12, m.m23+m.m22, m.m33+m.m32);
+    f.far = VEC4(m.m03-m.m02, m.m13-m.m12, m.m23-m.m22, m.m33-m.m32);
     for (int i = 0; i < 6; i++)
         f.pln[i] = vec4Divide(f.pln[i], vec3Length(f.pln[i].xyz));
     return f;
 }
 DVDEF int frstCullSphere (frst f, vec3 v, DVTYPE s) {
-    for (int i = 0; i < 6; i++) {
-        DVTYPE d = vec3DotProduct(f.pln[i].xyz, v) + f.pln[i].w;
-        if (d < -s)
+    for (int i = 0; i < 6; i++)
+        if (vec3DotProduct(f.pln[i].xyz, v) + f.pln[i].w + s < 0)
             return 0;
-        else if (d < s)
-            return 1;
+    return 1;
+}
+DVDEF int frstCullAABB (frst f, vec3 min, vec3 max) {
+    for (int i = 0; i < 6; i++) {
+        const vec3 v = VEC3(f.pln[i].x > 0 ? max.x : min.x, f.pln[i].y > 0 ? max.y : min.y, f.pln[i].z > 0 ? max.z : min.z);
+        if (vec3DotProduct(f.pln[i].xyz, v) + f.pln[i].w < 0)
+            return 0;
     }
     return 1;
 }
