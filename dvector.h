@@ -19,7 +19,7 @@ dvector supports the following three configurations:
 dvector math:
     The section marked "math configuration" in this file can be modified to use different math functions or a different base type.
     Defaults to using C standard math.h with float as a base type and the corresponding mathematical functions.
-    
+
 dvector types:
     Supports vec2, vec3, vec4, quat, mat2, mat3, and mat4 types with various property aliases for flexible use and concise code.
     Each of the above types comes with a TYPE_ZERO and TYPE_IDEN (for quat and matrix types) constant which translates to a literal.
@@ -31,6 +31,7 @@ dvector functions:
     All equality functions use direct comparison (no epsilon), therefore floating point errors may break equality for some values.
     All quat functions should return normalized quats, occasional normalization is recommended due to float error accumulation.
     All angles are in radians. Frustum culling of spheres returns 1 for spheres inside the frustum, 0 for spheres outside it.
+    All coordinate systems are right-handed unless otherwise noted. Projection functions assume OpenGL-style screen space.
 */
 
 //include only once
@@ -126,6 +127,8 @@ DVDEF vec2 vec2Negate(vec2);
 DVDEF vec2 vec2Normalize(vec2);
 DVDEF vec2 vec2Multiply(vec2, DVTYPE);
 DVDEF vec2 vec2Divide(vec2, DVTYPE);
+DVDEF vec2 vec2Rotate(vec2, DVTYPE);
+DVDEF vec2 vec2RotateXZ(vec2, DVTYPE);
 DVDEF vec2 vec2Add(vec2, vec2);
 DVDEF vec2 vec2Subtract(vec2, vec2);
 DVDEF vec2 vec2Reflect(vec2, vec2);
@@ -135,6 +138,7 @@ DVDEF int vec2Equal(vec2, vec2);
 //vec3 function declarations
 DVDEF DVTYPE vec3Length(vec3);
 DVDEF DVTYPE vec3DotProduct(vec3, vec3);
+DVDEF vec2 vec3GetXZ(vec3);
 DVDEF vec3 vec3Negate(vec3);
 DVDEF vec3 vec3Normalize(vec3);
 DVDEF vec3 vec3Multiply(vec3, DVTYPE);
@@ -253,8 +257,16 @@ DVDEF vec2 vec2Normalize (vec2 v) {
 DVDEF vec2 vec2Multiply (vec2 v, DVTYPE s) {
     return VEC2(v.x*s, v.y*s);
 }
-DVDEF vec2 vec2Divide(vec2 v, DVTYPE s) {
+DVDEF vec2 vec2Divide (vec2 v, DVTYPE s) {
     return VEC2(v.x/s, v.y/s);
+}
+DVDEF vec2 vec2Rotate (vec2 v, DVTYPE r) {
+    DVTYPE c = DVCOS(r), s = DVSIN(r);
+    return VEC2(v.x*c-v.y*s, v.y*c+v.x*s);
+}
+DVDEF vec2 vec2RotateXZ (vec2 v, DVTYPE r) {
+    DVTYPE c = DVCOS(r), s = DVSIN(r);
+    return VEC2(v.x*c+v.y*s, v.y*c-v.x*s);
 }
 DVDEF vec2 vec2Add (vec2 v1, vec2 v2) {
     return VEC2(v1.x+v2.x, v1.y+v2.y);
@@ -262,7 +274,7 @@ DVDEF vec2 vec2Add (vec2 v1, vec2 v2) {
 DVDEF vec2 vec2Subtract (vec2 v1, vec2 v2) {
     return VEC2(v1.x-v2.x, v1.y-v2.y);
 }
-DVDEF vec2 vec2Reflect(vec2 v1, vec2 v2) {
+DVDEF vec2 vec2Reflect (vec2 v1, vec2 v2) {
     return vec2Subtract(v1, vec2Multiply(v2, 2*vec2DotProduct(v1, v2)));
 }
 DVDEF vec2 vec2Mix (vec2 v1, vec2 v2, DVTYPE s) {
@@ -278,6 +290,9 @@ DVDEF DVTYPE vec3Length (vec3 v) {
 }
 DVDEF DVTYPE vec3DotProduct (vec3 v1, vec3 v2) {
     return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
+}
+DVDEF vec2 vec3GetXZ (vec3 v) {
+    return VEC2(v.x, v.z);
 }
 DVDEF vec3 vec3Negate (vec3 v) {
     return VEC3(-v.x, -v.y, -v.z);
