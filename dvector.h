@@ -14,7 +14,7 @@ dvector supports the following three configurations:
 #define DVECTOR_IMPLEMENTATION
     Must be defined in exactly one source file within a project for dvector to be found by the linker.
 #define DVECTOR_STATIC
-    Defines all dvector functions as static inline, useful if dvector is only used in a single compilation unit.
+    Defines all dvector functions as static, useful if dvector is only used in a single compilation unit.
 
 dvector math:
     The section marked "math configuration" in this file can be modified to use different math functions or a different base type.
@@ -41,7 +41,7 @@ dvector functions:
 //process configuration
 #ifdef DVECTOR_STATIC
     #define DVECTOR_IMPLEMENTATION
-    #define DVDEF static inline
+    #define DVDEF static
 #else //DVECTOR_EXTERN
     #define DVDEF extern
 #endif
