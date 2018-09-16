@@ -34,7 +34,7 @@ dvector functions:
     All coordinate systems are right-handed unless otherwise noted. Projection functions assume OpenGL-style screen space.
 */
 
-//include only once
+//header section
 #ifndef DVECTOR_H
 #define DVECTOR_H
 
@@ -239,8 +239,11 @@ DVDEF frst frstFromMatrix(mat4);
 DVDEF int frstCullSphere(frst, vec3, DVTYPE);
 DVDEF int frstCullAABB(frst, vec3, vec3);
 
+#endif //DVECTOR_H
+
 //implementation section
 #ifdef DVECTOR_IMPLEMENTATION
+#undef DVECTOR_IMPLEMENTATION
 
 //vec2 functions
 DVDEF DVTYPE vec2Length (vec2 v) {
@@ -662,4 +665,3 @@ DVDEF int frstCullAABB (frst f, vec3 min, vec3 max) {
 }
 
 #endif //DVECTOR_IMPLEMENTATION
-#endif //DVECTOR_H
