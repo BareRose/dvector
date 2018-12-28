@@ -46,14 +46,15 @@ dvector functions:
     #define DVDEF extern
 #endif
 
-//math configuration
-#include <math.h>
-#define DVTYPE float
-#define DVCOS cosf
-#define DVSIN sinf
-#define DVTAN tanf
-#define DVACOS acosf
-#define DVHYPOT hypotf
+//macros
+#define VEC2(X, Y) (vec2){{X, Y}}
+#define VEC3(X, Y, Z) (vec3){{X, Y, Z}}
+#define VEC4(X, Y, Z, W) (vec4){{X, Y, Z, W}}
+#define QUAT(X, Y, Z, W) (quat){{X, Y, Z, W}}
+#define MAT2(M00, M01, M10, M11) (mat2){{{M00, M01}, {M10, M11}}}
+#define MAT3(M00, M01, M02, M10, M11, M12, M20, M21, M22) (mat3){{{M00, M01, M02}, {M10, M11, M12}, {M20, M21, M22}}}
+#define MAT4(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33) \
+    (mat4){{{M00, M01, M02, M03}, {M10, M11, M12, M13}, {M20, M21, M22, M23}, {M30, M31, M32, M33}}}
 
 //constants
 #define VEC2_ZERO (vec2){{0, 0}}
@@ -67,15 +68,14 @@ dvector functions:
 #define MAT4_ZERO (mat4){{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}}
 #define MAT4_IDEN (mat4){{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}}
 
-//macros
-#define VEC2(X, Y) (vec2){{X, Y}}
-#define VEC3(X, Y, Z) (vec3){{X, Y, Z}}
-#define VEC4(X, Y, Z, W) (vec4){{X, Y, Z, W}}
-#define QUAT(X, Y, Z, W) (quat){{X, Y, Z, W}}
-#define MAT2(M00, M01, M10, M11) (mat2){{{M00, M01}, {M10, M11}}}
-#define MAT3(M00, M01, M02, M10, M11, M12, M20, M21, M22) (mat3){{{M00, M01, M02}, {M10, M11, M12}, {M20, M21, M22}}}
-#define MAT4(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33) \
-    (mat4){{{M00, M01, M02, M03}, {M10, M11, M12, M13}, {M20, M21, M22, M23}, {M30, M31, M32, M33}}}
+//math configuration
+#include <math.h>
+#define DVTYPE float
+#define DVCOS cosf
+#define DVSIN sinf
+#define DVTAN tanf
+#define DVACOS acosf
+#define DVHYPOT hypotf
 
 //types
 typedef union vec2 {
