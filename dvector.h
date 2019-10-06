@@ -77,12 +77,21 @@ dvector functions:
 
 //math configuration
 #include <math.h>
-#define DVTYPE float
-#define DVCOS cosf
-#define DVSIN sinf
-#define DVTAN tanf
-#define DVACOS acosf
-#define DVHYPOT hypotf
+#ifdef DVECTOR_DOUBLE_PRECISION
+    #define DVTYPE double
+    #define DVCOS cos
+    #define DVSIN sin
+    #define DVTAN tan
+    #define DVACOS acos
+    #define DVHYPOT hypot
+#else
+    #define DVTYPE float
+    #define DVCOS cosf
+    #define DVSIN sinf
+    #define DVTAN tanf
+    #define DVACOS acosf
+    #define DVHYPOT hypotf
+#endif
 
 //types
 #ifdef DVECTOR_ISOC
