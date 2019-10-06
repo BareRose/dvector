@@ -47,26 +47,33 @@ dvector functions:
 #endif
 
 //macros
-#define VEC2(X, Y) (vec2){{X, Y}}
-#define VEC3(X, Y, Z) (vec3){{X, Y, Z}}
-#define VEC4(X, Y, Z, W) (vec4){{X, Y, Z, W}}
-#define QUAT(X, Y, Z, W) (quat){{X, Y, Z, W}}
+#ifdef DVECTOR_ISOC
+    #define VEC2(X, Y) (vec2){X, Y}
+    #define VEC3(X, Y, Z) (vec3){X, Y, Z}
+    #define VEC4(X, Y, Z, W) (vec4){X, Y, Z, W}
+    #define QUAT(X, Y, Z, W) (quat){X, Y, Z, W}
+#else
+    #define VEC2(X, Y) (vec2){{X, Y}}
+    #define VEC3(X, Y, Z) (vec3){{X, Y, Z}}
+    #define VEC4(X, Y, Z, W) (vec4){{X, Y, Z, W}}
+    #define QUAT(X, Y, Z, W) (quat){{X, Y, Z, W}}
+#endif
 #define MAT2(M00, M01, M10, M11) (mat2){{{M00, M01}, {M10, M11}}}
 #define MAT3(M00, M01, M02, M10, M11, M12, M20, M21, M22) (mat3){{{M00, M01, M02}, {M10, M11, M12}, {M20, M21, M22}}}
 #define MAT4(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33) \
     (mat4){{{M00, M01, M02, M03}, {M10, M11, M12, M13}, {M20, M21, M22, M23}, {M30, M31, M32, M33}}}
 
 //constants
-#define VEC2_ZERO (vec2){{0, 0}}
-#define VEC3_ZERO (vec3){{0, 0, 0}}
-#define VEC4_ZERO (vec4){{0, 0, 0, 0}}
-#define QUAT_IDEN (quat){{0, 0, 0, 1}}
-#define MAT2_ZERO (mat2){{{0, 0}, {0, 0}}}
-#define MAT2_IDEN (mat2){{{1, 0}, {0, 1}}}
-#define MAT3_ZERO (mat3){{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}}
-#define MAT3_IDEN (mat2){{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}}
-#define MAT4_ZERO (mat4){{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}}
-#define MAT4_IDEN (mat4){{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}}
+#define VEC2_ZERO VEC2(0, 0)
+#define VEC3_ZERO VEC3(0, 0, 0)
+#define VEC4_ZERO VEC4(0, 0, 0, 0)
+#define QUAT_IDEN QUAT(0, 0, 0, 1)
+#define MAT2_ZERO MAT2({0, 0}, {0, 0})
+#define MAT2_IDEN MAT2({1, 0}, {0, 1})
+#define MAT3_ZERO MAT3({0, 0, 0}, {0, 0, 0}, {0, 0, 0})
+#define MAT3_IDEN MAT3({1, 0, 0}, {0, 1, 0}, {0, 0, 1})
+#define MAT4_ZERO MAT4({0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0})
+#define MAT4_IDEN MAT4({1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1})
 
 //math configuration
 #include <math.h>
@@ -78,47 +85,75 @@ dvector functions:
 #define DVHYPOT hypotf
 
 //types
-typedef union vec2 {
-	DVTYPE v[2];
-	struct {DVTYPE x, y;};
-} vec2;
-typedef union vec3 {
-	DVTYPE v[3];
-    struct {DVTYPE x, y, z;};
-    struct {vec2 xy; DVTYPE _z;};
-    struct {DVTYPE _x; vec2 yz;};
-} vec3;
-typedef union vec4 {
-	DVTYPE v[4];
-    struct {DVTYPE x, y, z, w;};
-    struct {vec3 xyz; DVTYPE _w;};
-    struct {DVTYPE _x; vec3 yzw;};
-    struct {vec2 xy; vec2 zw;};
-    struct {DVTYPE __x; vec2 yz; DVTYPE __w;};
-} vec4, quat;
-typedef union mat2 {
-    DVTYPE m[2][2];
-    struct {DVTYPE m00, m01, m10, m11;};
-    vec2 col[2];
-    struct {vec2 col0, col1;};
-} mat2;
-typedef union mat3 {
-    DVTYPE m[3][3];
-    struct {DVTYPE m00, m01, m02, m10, m11, m12, m20, m21, m22;};
-    vec3 col[3];
-    struct {vec3 col0, col1, col2;};
-} mat3;
-typedef union mat4 {
-    DVTYPE m[4][4];
-    struct {DVTYPE m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;};
-    vec4 col[4];
-    struct {vec4 col0, col1, col2, col3;};
-} mat4;
-typedef union frst {
-    DVTYPE f[24];
-    vec4 pln[6];
-    struct {vec4 left, right, top, bottom, near, far;};
-} frst;
+#ifdef DVECTOR_ISOC
+    typedef struct vec2 {
+        DVTYPE x, y;
+    } vec2;
+    typedef struct vec3 {
+        DVTYPE x, y, z;
+    } vec3;
+    typedef struct vec4 {
+        DVTYPE x, y, z, w;
+    } vec4, quat;
+    typedef union mat2 {
+        DVTYPE m[2][2];
+        vec2 col[2];
+    } mat2;
+    typedef union mat3 {
+        DVTYPE m[3][3];
+        vec3 col[3];
+    } mat3;
+    typedef union mat4 {
+        DVTYPE m[4][4];
+        vec4 col[4];
+    } mat4;
+    typedef union frst {
+        DVTYPE f[24];
+        vec4 pln[6];
+    } frst;
+#else
+    typedef union vec2 {
+        DVTYPE v[2];
+        struct {DVTYPE x, y;};
+    } vec2;
+    typedef union vec3 {
+        DVTYPE v[3];
+        struct {DVTYPE x, y, z;};
+        struct {vec2 xy; DVTYPE _z;};
+        struct {DVTYPE _x; vec2 yz;};
+    } vec3;
+    typedef union vec4 {
+        DVTYPE v[4];
+        struct {DVTYPE x, y, z, w;};
+        struct {vec3 xyz; DVTYPE _w;};
+        struct {DVTYPE _x; vec3 yzw;};
+        struct {vec2 xy; vec2 zw;};
+        struct {DVTYPE __x; vec2 yz; DVTYPE __w;};
+    } vec4, quat;
+    typedef union mat2 {
+        DVTYPE m[2][2];
+        struct {DVTYPE m00, m01, m10, m11;};
+        vec2 col[2];
+        struct {vec2 col0, col1;};
+    } mat2;
+    typedef union mat3 {
+        DVTYPE m[3][3];
+        struct {DVTYPE m00, m01, m02, m10, m11, m12, m20, m21, m22;};
+        vec3 col[3];
+        struct {vec3 col0, col1, col2;};
+    } mat3;
+    typedef union mat4 {
+        DVTYPE m[4][4];
+        struct {DVTYPE m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;};
+        vec4 col[4];
+        struct {vec4 col0, col1, col2, col3;};
+    } mat4;
+    typedef union frst {
+        DVTYPE f[24];
+        vec4 pln[6];
+        struct {vec4 left, right, top, bottom, near, far;};
+    } frst;
+#endif
 
 //vec2 function declarations
 DVDEF DVTYPE vec2Length(vec2);
@@ -151,6 +186,7 @@ DVDEF vec3 vec3Mix(vec3, vec3, DVTYPE);
 DVDEF int vec3Equal(vec3, vec3);
 
 //vec4 function declarations
+DVDEF vec3 vec4GetXYZ(vec4);
 DVDEF DVTYPE vec4Length(vec4);
 DVDEF DVTYPE vec4DotProduct(vec4, vec4);
 DVDEF vec4 vec4Negate(vec4);
@@ -164,6 +200,7 @@ DVDEF vec4 vec4Mix(vec4, vec4, DVTYPE);
 DVDEF int vec4Equal(vec4, vec4);
 
 //quat function declarations
+DVDEF vec3 quatGetXYZ(quat);
 DVDEF vec3 quatMultiplyVector(quat, vec3);
 DVDEF quat quatAxisAngle(vec3, DVTYPE);
 DVDEF quat quatEulerXYZ(DVTYPE, DVTYPE, DVTYPE);
@@ -331,6 +368,9 @@ DVDEF int vec3Equal (vec3 v1, vec3 v2) {
 
 
 //vec4 functions
+DVDEF vec3 vec4GetXYZ (vec4 v) {
+    return VEC3(v.x, v.y, v.z);
+}
 DVDEF DVTYPE vec4Length (vec4 v) {
     return DVHYPOT(DVHYPOT(v.x, v.y), DVHYPOT(v.z, v.w));
 }
@@ -366,12 +406,16 @@ DVDEF int vec4Equal (vec4 v1, vec4 v2) {
 }
 
 //quat functions
+DVDEF vec3 quatGetXYZ (quat q) {
+    return VEC3(q.x, q.y, q.z);
+}
 DVDEF vec3 quatMultiplyVector (quat q, vec3 v) {
-	vec3 t = vec3Multiply(vec3CrossProduct(q.xyz, v), 2);
-	return vec3Add(vec3Add(v, vec3Multiply(t, q.w)), vec3CrossProduct(q.xyz, t));
+    vec3 q_xyz = VEC3(q.x, q.y, q.z);
+    vec3 t = vec3Multiply(vec3CrossProduct(q_xyz, v), 2);
+    return vec3Add(vec3Add(v, vec3Multiply(t, q.w)), vec3CrossProduct(q_xyz, t));
 }
 DVDEF quat quatAxisAngle (vec3 a, DVTYPE r) {
-	DVTYPE s = DVSIN(r/2);
+    DVTYPE s = DVSIN(r/2);
     return QUAT(a.x*s, a.y*s, a.z*s, DVCOS(r/2));
 }
 DVDEF quat quatEulerXYZ (DVTYPE a, DVTYPE b, DVTYPE c) {
@@ -402,7 +446,7 @@ DVDEF quat quatLerp (quat q1, quat q2, DVTYPE s) {
     return quatNormalize(QUAT((1-s)*q1.x + s*q2.x, (1-s)*q1.y + s*q2.y, (1-s)*q1.z + s*q2.z, (1-s)*q1.w + s*q2.w));
 }
 DVDEF quat quatSlerp (quat q1, quat q2, DVTYPE s) {
-	DVTYPE th = DVACOS(q1.x*q2.x + q1.y*q2.y + q1.z*q2.z + q1.w*q2.w), sn = DVSIN(th), wa = DVSIN((1-s)*th)/sn, wb = DVSIN(s*th)/sn;
+    DVTYPE th = DVACOS(q1.x*q2.x + q1.y*q2.y + q1.z*q2.z + q1.w*q2.w), sn = DVSIN(th), wa = DVSIN((1-s)*th)/sn, wb = DVSIN(s*th)/sn;
     return quatNormalize(QUAT(wa*q1.x + wb*q2.x, wa*q1.y + wb*q2.y, wa*q1.z + wb*q2.z, wa*q1.w + wb*q2.w));
 }
 DVDEF quat quatMultiply (quat q1, quat q2) {
@@ -415,16 +459,16 @@ DVDEF int quatEqual (quat q1, quat q2) {
 
 //mat2 functions
 DVDEF vec2 mat2MultiplyVector (mat2 m, vec2 v) {
-    return VEC2(m.m00*v.x + m.m10*v.y, m.m01*v.x + m.m11*v.y);
+    return VEC2(m.m[0][0]*v.x + m.m[1][0]*v.y, m.m[0][1]*v.x + m.m[1][1]*v.y);
 }
 DVDEF mat2 mat2Transpose (mat2 m) {
-    return MAT2(m.m00, m.m10, m.m01, m.m11);
+    return MAT2(m.m[0][0], m.m[1][0], m.m[0][1], m.m[1][1]);
 }
 DVDEF mat2 mat2Inverse (mat2 m) {
-    return mat2MultiplyScalar(MAT2(m.m11, -m.m01, -m.m10, m.m00), 1/(m.m00*m.m11-m.m10*m.m01));
+    return mat2MultiplyScalar(MAT2(m.m[1][1], -m.m[0][1], -m.m[1][0], m.m[0][0]), 1/(m.m[0][0]*m.m[1][1]-m.m[1][0]*m.m[0][1]));
 }
 DVDEF mat2 mat2MultiplyScalar (mat2 m, DVTYPE s) {
-    return MAT2(m.m00*s, m.m01*s, m.m10*s, m.m11*s);
+    return MAT2(m.m[0][0]*s, m.m[0][1]*s, m.m[1][0]*s, m.m[1][1]*s);
 }
 DVDEF mat2 mat2MultiplyMatrix (mat2 m1, mat2 m2) {
     mat2 m;
@@ -434,21 +478,21 @@ DVDEF mat2 mat2MultiplyMatrix (mat2 m1, mat2 m2) {
     return m;
 }
 DVDEF mat2 mat2Add (mat2 m1, mat2 m2) {
-    return MAT2(m1.m00+m2.m00, m1.m01+m2.m01, m1.m10+m2.m10, m1.m11+m2.m11);
+    return MAT2(m1.m[0][0]+m2.m[0][0], m1.m[0][1]+m2.m[0][1], m1.m[1][0]+m2.m[1][0], m1.m[1][1]+m2.m[1][1]);
 }
 DVDEF mat2 mat2Subtract (mat2 m1, mat2 m2) {
-    return MAT2(m1.m00-m2.m00, m1.m01-m2.m01, m1.m10-m2.m10, m1.m11-m2.m11);
+    return MAT2(m1.m[0][0]-m2.m[0][0], m1.m[0][1]-m2.m[0][1], m1.m[1][0]-m2.m[1][0], m1.m[1][1]-m2.m[1][1]);
 }
 DVDEF int mat2Equal (mat2 m1, mat2 m2) {
-    return (m1.m00 == m2.m00)&&(m1.m01 == m2.m01)&&(m1.m10 == m2.m10)&&(m1.m11 == m2.m11);
+    return (m1.m[0][0] == m2.m[0][0])&&(m1.m[0][1] == m2.m[0][1])&&(m1.m[1][0] == m2.m[1][0])&&(m1.m[1][1] == m2.m[1][1]);
 }
 
 //mat3 function declarations
 DVDEF vec3 mat3MultiplyVector (mat3 m, vec3 v) {
-    vec3 r;
+    DVTYPE r[3];
     for (int i = 0; i < 3; i++)
-        r.v[i] = m.m[0][i]*v.x + m.m[1][i]*v.y + m.m[2][i]*v.z;
-    return r;
+        r[i] = m.m[0][i]*v.x + m.m[1][i]*v.y + m.m[2][i]*v.z;
+    return VEC3(r[0], r[1], r[2]);
 }
 DVDEF mat3 mat3SetRotation (DVTYPE r) {
     DVTYPE c = DVCOS(r), s = DVSIN(r);
@@ -464,12 +508,12 @@ DVDEF mat3 mat3SetTranslation (vec2 v) {
     return MAT3(1, 0, 0, 0, 1, 0, v.x, v.y, 1);
 }
 DVDEF mat3 mat3Transpose (mat3 m) {
-    return MAT3(m.m00, m.m10, m.m20, m.m01, m.m11, m.m21, m.m02, m.m12, m.m22);
+    return MAT3(m.m[0][0], m.m[1][0], m.m[2][0], m.m[0][1], m.m[1][1], m.m[2][1], m.m[0][2], m.m[1][2], m.m[2][2]);
 }
 DVDEF mat3 mat3Inverse (mat3 m) {
-    mat3 t = MAT3(m.m11*m.m22 - m.m21*m.m12, m.m12*m.m20 - m.m10*m.m22, m.m10*m.m21 - m.m11*m.m20, m.m21*m.m02 - m.m01*m.m22,
-        m.m00*m.m22 - m.m02*m.m20, m.m01*m.m20 - m.m00*m.m21, m.m01*m.m12 - m.m11*m.m02, m.m02*m.m10 - m.m00*m.m12, m.m00*m.m11 - m.m01*m.m10);
-    return mat3MultiplyScalar(t, 1/(m.m00*t.m00 + m.m10*t.m10 + m.m20*t.m20));
+    mat3 t = MAT3(m.m[1][1]*m.m[2][2] - m.m[2][1]*m.m[1][2], m.m[1][2]*m.m[2][0] - m.m[1][0]*m.m[2][2], m.m[1][0]*m.m[2][1] - m.m[1][1]*m.m[2][0], m.m[2][1]*m.m[0][2] - m.m[0][1]*m.m[2][2],
+        m.m[0][0]*m.m[2][2] - m.m[0][2]*m.m[2][0], m.m[0][1]*m.m[2][0] - m.m[0][0]*m.m[2][1], m.m[0][1]*m.m[1][2] - m.m[1][1]*m.m[0][2], m.m[0][2]*m.m[1][0] - m.m[0][0]*m.m[1][2], m.m[0][0]*m.m[1][1] - m.m[0][1]*m.m[1][0]);
+    return mat3MultiplyScalar(t, 1/(m.m[0][0]*t.m[0][0] + m.m[1][0]*t.m[1][0] + m.m[2][0]*t.m[2][0]));
 }
 DVDEF mat3 mat3MultiplyScalar (mat3 m, DVTYPE s) {
     for (int i = 0; i < 3; i++)
@@ -520,10 +564,10 @@ DVDEF int mat3Equal (mat3 m1, mat3 m2) {
 
 //mat4 function declarations
 DVDEF vec4 mat4MultiplyVector (mat4 m, vec4 v) {
-    vec4 r;
+    DVTYPE r[4];
     for (int i = 0; i < 4; i++)
-        r.v[i] = m.m[0][i]*v.x + m.m[1][i]*v.y + m.m[2][i]*v.z + m.m[3][i]*v.w;
-    return r;
+        r[i] = m.m[0][i]*v.x + m.m[1][i]*v.y + m.m[2][i]*v.z + m.m[3][i]*v.w;
+    return VEC4(r[0], r[1], r[2], r[3]);
 }
 DVDEF mat4 mat4SetRotationX (DVTYPE r) {
     DVTYPE c = DVCOS(r), s = DVSIN(r);
@@ -551,14 +595,14 @@ DVDEF mat4 mat4SetTranslation (vec3 v) {
     return MAT4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, v.x, v.y, v.z, 1);
 }
 DVDEF mat4 mat4LookAt (vec3 from, vec3 to, vec3 up) {
-	vec3 f = vec3Normalize(vec3Subtract(to, from)), s = vec3Normalize(vec3CrossProduct(f, up)), t = vec3CrossProduct(s, f);
+    vec3 f = vec3Normalize(vec3Subtract(to, from)), s = vec3Normalize(vec3CrossProduct(f, up)), t = vec3CrossProduct(s, f);
     mat4 m = MAT4(s.x, t.x, -f.x, 0, s.y, t.y, -f.y, 0, s.z, t.z, -f.z, 0, 0, 0, 0, 1);
-	for (int i = 0; i < 3; i++)
-		m.m[3][i] = -vec3DotProduct(VEC3(m.m[0][i], m.m[1][i], m.m[2][i]), from);
+    for (int i = 0; i < 3; i++)
+        m.m[3][i] = -vec3DotProduct(VEC3(m.m[0][i], m.m[1][i], m.m[2][i]), from);
     return m;
 }
 DVDEF mat4 mat4Perspective (DVTYPE vfov, DVTYPE aspect, DVTYPE ndist, DVTYPE fdist) {
-	DVTYPE a = 1/DVTAN(vfov/2);
+    DVTYPE a = 1/DVTAN(vfov/2);
     return MAT4(a/aspect, 0, 0, 0, 0, a, 0, 0, 0, 0, -((fdist+ndist)/(fdist-ndist)), -1, 0, 0, -((2*fdist*ndist)/(fdist-ndist)), 0);
 }
 DVDEF mat4 mat4Ortho (DVTYPE left, DVTYPE right, DVTYPE bottom, DVTYPE top, DVTYPE ndist, DVTYPE fdist) {
@@ -566,19 +610,19 @@ DVDEF mat4 mat4Ortho (DVTYPE left, DVTYPE right, DVTYPE bottom, DVTYPE top, DVTY
         -(right+left)/(right-left), -(top+bottom)/(top-bottom), -(fdist+ndist)/(fdist-ndist), 1);
 }
 DVDEF mat4 mat4Transpose (mat4 m) {
-    return MAT4(m.m00, m.m10, m.m20, m.m30, m.m01, m.m11, m.m21, m.m31, m.m02, m.m12, m.m22, m.m32, m.m03, m.m13, m.m23, m.m33);
+    return MAT4(m.m[0][0], m.m[1][0], m.m[2][0], m.m[3][0], m.m[0][1], m.m[1][1], m.m[2][1], m.m[3][1], m.m[0][2], m.m[1][2], m.m[2][2], m.m[3][2], m.m[0][3], m.m[1][3], m.m[2][3], m.m[3][3]);
 }
 DVDEF mat4 mat4Inverse (mat4 m) {
-	DVTYPE s[6] = {m.m00*m.m11 - m.m10*m.m01, m.m00*m.m12 - m.m10*m.m02, m.m00*m.m13 - m.m10*m.m03,
-        m.m01*m.m12 - m.m11*m.m02, m.m01*m.m13 - m.m11*m.m03, m.m02*m.m13 - m.m12*m.m03};
-    DVTYPE c[6] = {m.m20*m.m31 - m.m30*m.m21, m.m20*m.m32 - m.m30*m.m22, m.m20*m.m33 - m.m30*m.m23,
-        m.m21*m.m32 - m.m31*m.m22, m.m21*m.m33 - m.m31*m.m23, m.m22*m.m33 - m.m32*m.m23};
-    return mat4MultiplyScalar(MAT4(m.m11*c[5] - m.m12*c[4] + m.m13*c[3], m.m02*c[4] - m.m01*c[5] - m.m03*c[3], m.m31*s[5] - m.m32*s[4] + m.m33*s[3],
-        m.m22*s[4] - m.m21*s[5] - m.m23*s[3], m.m12*c[2] - m.m10*c[5] - m.m13*c[1], m.m00*c[5] - m.m02*c[2] + m.m03*c[1],
-        m.m32*s[2] - m.m30*s[5] - m.m33*s[1], m.m20*s[5] - m.m22*s[2] + m.m23*s[1], m.m10*c[4] - m.m11*c[2] + m.m13*c[0],
-        m.m01*c[2] - m.m00*c[4] - m.m03*c[0], m.m30*s[4] - m.m31*s[2] + m.m33*s[0], m.m21*s[2] - m.m20*s[4] - m.m23*s[0],
-        m.m11*c[1] - m.m10*c[3] - m.m12*c[0], m.m00*c[3] - m.m01*c[1] + m.m02*c[0], m.m31*s[1] - m.m30*s[3] - m.m32*s[0],
-        m.m20*s[3] - m.m21*s[1] + m.m22*s[0]), 1/(s[0]*c[5] - s[1]*c[4] + s[2]*c[3] + s[3]*c[2] - s[4]*c[1] + s[5]*c[0]));
+    DVTYPE s[6] = {m.m[0][0]*m.m[1][1] - m.m[1][0]*m.m[0][1], m.m[0][0]*m.m[1][2] - m.m[1][0]*m.m[0][2], m.m[0][0]*m.m[1][3] - m.m[1][0]*m.m[0][3],
+        m.m[0][1]*m.m[1][2] - m.m[1][1]*m.m[0][2], m.m[0][1]*m.m[1][3] - m.m[1][1]*m.m[0][3], m.m[0][2]*m.m[1][3] - m.m[1][2]*m.m[0][3]};
+    DVTYPE c[6] = {m.m[2][0]*m.m[3][1] - m.m[3][0]*m.m[2][1], m.m[2][0]*m.m[3][2] - m.m[3][0]*m.m[2][2], m.m[2][0]*m.m[3][3] - m.m[3][0]*m.m[2][3],
+        m.m[2][1]*m.m[3][2] - m.m[3][1]*m.m[2][2], m.m[2][1]*m.m[3][3] - m.m[3][1]*m.m[2][3], m.m[2][2]*m.m[3][3] - m.m[3][2]*m.m[2][3]};
+    return mat4MultiplyScalar(MAT4(m.m[1][1]*c[5] - m.m[1][2]*c[4] + m.m[1][3]*c[3], m.m[0][2]*c[4] - m.m[0][1]*c[5] - m.m[0][3]*c[3], m.m[3][1]*s[5] - m.m[3][2]*s[4] + m.m[3][3]*s[3],
+        m.m[2][2]*s[4] - m.m[2][1]*s[5] - m.m[2][3]*s[3], m.m[1][2]*c[2] - m.m[1][0]*c[5] - m.m[1][3]*c[1], m.m[0][0]*c[5] - m.m[0][2]*c[2] + m.m[0][3]*c[1],
+        m.m[3][2]*s[2] - m.m[3][0]*s[5] - m.m[3][3]*s[1], m.m[2][0]*s[5] - m.m[2][2]*s[2] + m.m[2][3]*s[1], m.m[1][0]*c[4] - m.m[1][1]*c[2] + m.m[1][3]*c[0],
+        m.m[0][1]*c[2] - m.m[0][0]*c[4] - m.m[0][3]*c[0], m.m[3][0]*s[4] - m.m[3][1]*s[2] + m.m[3][3]*s[0], m.m[2][1]*s[2] - m.m[2][0]*s[4] - m.m[2][3]*s[0],
+        m.m[1][1]*c[1] - m.m[1][0]*c[3] - m.m[1][2]*c[0], m.m[0][0]*c[3] - m.m[0][1]*c[1] + m.m[0][2]*c[0], m.m[3][1]*s[1] - m.m[3][0]*s[3] - m.m[3][2]*s[0],
+        m.m[2][0]*s[3] - m.m[2][1]*s[1] + m.m[2][2]*s[0]), 1/(s[0]*c[5] - s[1]*c[4] + s[2]*c[3] + s[3]*c[2] - s[4]*c[1] + s[5]*c[0]));
 }
 DVDEF mat4 mat4MultiplyScalar (mat4 m, DVTYPE s) {
     for (int i = 0; i < 4; i++)
@@ -639,26 +683,26 @@ DVDEF int mat4Equal (mat4 m1, mat4 m2) {
 //frst functions
 DVDEF frst frstFromMatrix (mat4 m) {
     frst f;
-    f.left = VEC4(m.m03+m.m00, m.m13+m.m10, m.m23+m.m20, m.m33+m.m30);
-    f.right = VEC4(m.m03-m.m00, m.m13-m.m10, m.m23-m.m20, m.m33-m.m30);
-    f.top = VEC4(m.m03-m.m01, m.m13-m.m11, m.m23-m.m21, m.m33-m.m31);
-    f.bottom = VEC4(m.m03+m.m01, m.m13+m.m11, m.m23+m.m21, m.m33+m.m31);
-    f.near = VEC4(m.m03+m.m02, m.m13+m.m12, m.m23+m.m22, m.m33+m.m32);
-    f.far = VEC4(m.m03-m.m02, m.m13-m.m12, m.m23-m.m22, m.m33-m.m32);
+    f.pln[0] = VEC4(m.m[0][3]+m.m[0][0], m.m[1][3]+m.m[1][0], m.m[2][3]+m.m[2][0], m.m[3][3]+m.m[3][0]); //left
+    f.pln[1] = VEC4(m.m[0][3]-m.m[0][0], m.m[1][3]-m.m[1][0], m.m[2][3]-m.m[2][0], m.m[3][3]-m.m[3][0]); //right
+    f.pln[2] = VEC4(m.m[0][3]-m.m[0][1], m.m[1][3]-m.m[1][1], m.m[2][3]-m.m[2][1], m.m[3][3]-m.m[3][1]); //top
+    f.pln[3] = VEC4(m.m[0][3]+m.m[0][1], m.m[1][3]+m.m[1][1], m.m[2][3]+m.m[2][1], m.m[3][3]+m.m[3][1]); //bottom
+    f.pln[4] = VEC4(m.m[0][3]+m.m[0][2], m.m[1][3]+m.m[1][2], m.m[2][3]+m.m[2][2], m.m[3][3]+m.m[3][2]); //near
+    f.pln[5] = VEC4(m.m[0][3]-m.m[0][2], m.m[1][3]-m.m[1][2], m.m[2][3]-m.m[2][2], m.m[3][3]-m.m[3][2]); //far
     for (int i = 0; i < 6; i++)
-        f.pln[i] = vec4Divide(f.pln[i], vec3Length(f.pln[i].xyz));
+        f.pln[i] = vec4Divide(f.pln[i], vec3Length(vec4GetXYZ(f.pln[i])));
     return f;
 }
 DVDEF int frstCullSphere (frst f, vec3 v, DVTYPE s) {
     for (int i = 0; i < 6; i++)
-        if (vec3DotProduct(f.pln[i].xyz, v) + f.pln[i].w + s < 0)
+        if (vec3DotProduct(vec4GetXYZ(f.pln[i]), v) + f.pln[i].w + s < 0)
             return 0;
     return 1;
 }
 DVDEF int frstCullAABB (frst f, vec3 min, vec3 max) {
     for (int i = 0; i < 6; i++) {
         const vec3 v = VEC3(f.pln[i].x > 0 ? max.x : min.x, f.pln[i].y > 0 ? max.y : min.y, f.pln[i].z > 0 ? max.z : min.z);
-        if (vec3DotProduct(f.pln[i].xyz, v) + f.pln[i].w < 0)
+        if (vec3DotProduct(vec4GetXYZ(f.pln[i]), v) + f.pln[i].w < 0)
             return 0;
     }
     return 1;
