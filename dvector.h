@@ -77,7 +77,7 @@ dvector functions:
 
 //math configuration
 #include <math.h>
-#ifdef DVECTOR_DOUBLE_PRECISION
+#ifdef DVECTOR_DOUBLE
     #define DVTYPE double
     #define DVCOS cos
     #define DVSIN sin
