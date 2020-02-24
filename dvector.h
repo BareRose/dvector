@@ -16,9 +16,11 @@ dvector supports the following three configurations:
 #define DVECTOR_STATIC
     Defines all dvector functions as static, useful if dvector is only used in a single compilation unit.
 
-dvector math:
-    The section marked "math configuration" in this file can be modified to use different math functions or a different base type.
-    Defaults to using C standard math.h with float as a base type and the corresponding mathematical functions.
+dvector supports the following additional options:
+#define DVECTOR_DOUBLE
+    Configures dvector to use double instead of the default float. Cannot use both float and double versions in the same compilation unit.
+#define DVECTOR_ISOC
+    Changes the way dvector types are defined for compatibility with ISO C99. Only affects convenience without limiting functionality.
 
 dvector types:
     Supports vec2, vec3, vec4, quat, mat2, mat3, and mat4 types with various property aliases for flexible use and concise code.
@@ -520,8 +522,9 @@ DVDEF mat3 mat3Transpose (mat3 m) {
     return MAT3(m.m[0][0], m.m[1][0], m.m[2][0], m.m[0][1], m.m[1][1], m.m[2][1], m.m[0][2], m.m[1][2], m.m[2][2]);
 }
 DVDEF mat3 mat3Inverse (mat3 m) {
-    mat3 t = MAT3(m.m[1][1]*m.m[2][2] - m.m[2][1]*m.m[1][2], m.m[1][2]*m.m[2][0] - m.m[1][0]*m.m[2][2], m.m[1][0]*m.m[2][1] - m.m[1][1]*m.m[2][0], m.m[2][1]*m.m[0][2] - m.m[0][1]*m.m[2][2],
-        m.m[0][0]*m.m[2][2] - m.m[0][2]*m.m[2][0], m.m[0][1]*m.m[2][0] - m.m[0][0]*m.m[2][1], m.m[0][1]*m.m[1][2] - m.m[1][1]*m.m[0][2], m.m[0][2]*m.m[1][0] - m.m[0][0]*m.m[1][2], m.m[0][0]*m.m[1][1] - m.m[0][1]*m.m[1][0]);
+    mat3 t = MAT3(m.m[1][1]*m.m[2][2] - m.m[2][1]*m.m[1][2], m.m[1][2]*m.m[2][0] - m.m[1][0]*m.m[2][2], m.m[1][0]*m.m[2][1] - m.m[1][1]*m.m[2][0],
+        m.m[2][1]*m.m[0][2] - m.m[0][1]*m.m[2][2], m.m[0][0]*m.m[2][2] - m.m[0][2]*m.m[2][0], m.m[0][1]*m.m[2][0] - m.m[0][0]*m.m[2][1],
+        m.m[0][1]*m.m[1][2] - m.m[1][1]*m.m[0][2], m.m[0][2]*m.m[1][0] - m.m[0][0]*m.m[1][2], m.m[0][0]*m.m[1][1] - m.m[0][1]*m.m[1][0]);
     return mat3MultiplyScalar(t, 1/(m.m[0][0]*t.m[0][0] + m.m[1][0]*t.m[1][0] + m.m[2][0]*t.m[2][0]));
 }
 DVDEF mat3 mat3MultiplyScalar (mat3 m, DVTYPE s) {
@@ -619,19 +622,21 @@ DVDEF mat4 mat4Ortho (DVTYPE left, DVTYPE right, DVTYPE bottom, DVTYPE top, DVTY
         -(right+left)/(right-left), -(top+bottom)/(top-bottom), -(fdist+ndist)/(fdist-ndist), 1);
 }
 DVDEF mat4 mat4Transpose (mat4 m) {
-    return MAT4(m.m[0][0], m.m[1][0], m.m[2][0], m.m[3][0], m.m[0][1], m.m[1][1], m.m[2][1], m.m[3][1], m.m[0][2], m.m[1][2], m.m[2][2], m.m[3][2], m.m[0][3], m.m[1][3], m.m[2][3], m.m[3][3]);
+    return MAT4(m.m[0][0], m.m[1][0], m.m[2][0], m.m[3][0], m.m[0][1], m.m[1][1], m.m[2][1], m.m[3][1],
+        m.m[0][2], m.m[1][2], m.m[2][2], m.m[3][2], m.m[0][3], m.m[1][3], m.m[2][3], m.m[3][3]);
 }
 DVDEF mat4 mat4Inverse (mat4 m) {
     DVTYPE s[6] = {m.m[0][0]*m.m[1][1] - m.m[1][0]*m.m[0][1], m.m[0][0]*m.m[1][2] - m.m[1][0]*m.m[0][2], m.m[0][0]*m.m[1][3] - m.m[1][0]*m.m[0][3],
         m.m[0][1]*m.m[1][2] - m.m[1][1]*m.m[0][2], m.m[0][1]*m.m[1][3] - m.m[1][1]*m.m[0][3], m.m[0][2]*m.m[1][3] - m.m[1][2]*m.m[0][3]};
     DVTYPE c[6] = {m.m[2][0]*m.m[3][1] - m.m[3][0]*m.m[2][1], m.m[2][0]*m.m[3][2] - m.m[3][0]*m.m[2][2], m.m[2][0]*m.m[3][3] - m.m[3][0]*m.m[2][3],
         m.m[2][1]*m.m[3][2] - m.m[3][1]*m.m[2][2], m.m[2][1]*m.m[3][3] - m.m[3][1]*m.m[2][3], m.m[2][2]*m.m[3][3] - m.m[3][2]*m.m[2][3]};
-    return mat4MultiplyScalar(MAT4(m.m[1][1]*c[5] - m.m[1][2]*c[4] + m.m[1][3]*c[3], m.m[0][2]*c[4] - m.m[0][1]*c[5] - m.m[0][3]*c[3], m.m[3][1]*s[5] - m.m[3][2]*s[4] + m.m[3][3]*s[3],
-        m.m[2][2]*s[4] - m.m[2][1]*s[5] - m.m[2][3]*s[3], m.m[1][2]*c[2] - m.m[1][0]*c[5] - m.m[1][3]*c[1], m.m[0][0]*c[5] - m.m[0][2]*c[2] + m.m[0][3]*c[1],
-        m.m[3][2]*s[2] - m.m[3][0]*s[5] - m.m[3][3]*s[1], m.m[2][0]*s[5] - m.m[2][2]*s[2] + m.m[2][3]*s[1], m.m[1][0]*c[4] - m.m[1][1]*c[2] + m.m[1][3]*c[0],
-        m.m[0][1]*c[2] - m.m[0][0]*c[4] - m.m[0][3]*c[0], m.m[3][0]*s[4] - m.m[3][1]*s[2] + m.m[3][3]*s[0], m.m[2][1]*s[2] - m.m[2][0]*s[4] - m.m[2][3]*s[0],
-        m.m[1][1]*c[1] - m.m[1][0]*c[3] - m.m[1][2]*c[0], m.m[0][0]*c[3] - m.m[0][1]*c[1] + m.m[0][2]*c[0], m.m[3][1]*s[1] - m.m[3][0]*s[3] - m.m[3][2]*s[0],
-        m.m[2][0]*s[3] - m.m[2][1]*s[1] + m.m[2][2]*s[0]), 1/(s[0]*c[5] - s[1]*c[4] + s[2]*c[3] + s[3]*c[2] - s[4]*c[1] + s[5]*c[0]));
+    return mat4MultiplyScalar(MAT4(m.m[1][1]*c[5] - m.m[1][2]*c[4] + m.m[1][3]*c[3], m.m[0][2]*c[4] - m.m[0][1]*c[5] - m.m[0][3]*c[3],
+        m.m[3][1]*s[5] - m.m[3][2]*s[4] + m.m[3][3]*s[3], m.m[2][2]*s[4] - m.m[2][1]*s[5] - m.m[2][3]*s[3], m.m[1][2]*c[2] - m.m[1][0]*c[5] - m.m[1][3]*c[1],
+        m.m[0][0]*c[5] - m.m[0][2]*c[2] + m.m[0][3]*c[1], m.m[3][2]*s[2] - m.m[3][0]*s[5] - m.m[3][3]*s[1], m.m[2][0]*s[5] - m.m[2][2]*s[2] + m.m[2][3]*s[1],
+        m.m[1][0]*c[4] - m.m[1][1]*c[2] + m.m[1][3]*c[0], m.m[0][1]*c[2] - m.m[0][0]*c[4] - m.m[0][3]*c[0], m.m[3][0]*s[4] - m.m[3][1]*s[2] + m.m[3][3]*s[0],
+        m.m[2][1]*s[2] - m.m[2][0]*s[4] - m.m[2][3]*s[0], m.m[1][1]*c[1] - m.m[1][0]*c[3] - m.m[1][2]*c[0], m.m[0][0]*c[3] - m.m[0][1]*c[1] + m.m[0][2]*c[0],
+        m.m[3][1]*s[1] - m.m[3][0]*s[3] - m.m[3][2]*s[0], m.m[2][0]*s[3] - m.m[2][1]*s[1] + m.m[2][2]*s[0]),
+        1/(s[0]*c[5] - s[1]*c[4] + s[2]*c[3] + s[3]*c[2] - s[4]*c[1] + s[5]*c[0]));
 }
 DVDEF mat4 mat4MultiplyScalar (mat4 m, DVTYPE s) {
     for (int i = 0; i < 4; i++)
