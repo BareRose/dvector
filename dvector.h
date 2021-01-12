@@ -48,6 +48,16 @@ dvector functions:
     #define DVDEF extern
 #endif
 
+/*
+Use the below macros and constants for function parameters and variable
+definitions in local scope. To initialize globals, use naked literals.
+Example:
+vec3 default_position = {0, 0, 0};
+void foo(){
+	bar(VEC3_ZERO);
+}
+*/
+
 //macros
 #ifdef DVECTOR_ISOC
     #define VEC2(X, Y) (vec2){X, Y}
@@ -70,12 +80,12 @@ dvector functions:
 #define VEC3_ZERO VEC3(0, 0, 0)
 #define VEC4_ZERO VEC4(0, 0, 0, 0)
 #define QUAT_IDEN QUAT(0, 0, 0, 1)
-#define MAT2_ZERO MAT2({0, 0}, {0, 0})
-#define MAT2_IDEN MAT2({1, 0}, {0, 1})
-#define MAT3_ZERO MAT3({0, 0, 0}, {0, 0, 0}, {0, 0, 0})
-#define MAT3_IDEN MAT3({1, 0, 0}, {0, 1, 0}, {0, 0, 1})
-#define MAT4_ZERO MAT4({0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0})
-#define MAT4_IDEN MAT4({1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1})
+#define MAT2_ZERO MAT2(0, 0,  0, 0)
+#define MAT2_IDEN MAT2(1, 0,  0, 1)
+#define MAT3_ZERO MAT3(0, 0, 0,  0, 0, 0,  0, 0, 0)
+#define MAT3_IDEN MAT3(1, 0, 0,  0, 1, 0,  0, 0, 1)
+#define MAT4_ZERO MAT4(0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0)
+#define MAT4_IDEN MAT4(1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0,  0, 0, 0, 1)
 
 //math configuration
 #include <math.h>
